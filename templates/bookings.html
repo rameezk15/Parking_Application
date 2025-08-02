@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{'Booking History' if bookings[0].is_release else 'Active Booking'}}
+{% endblock %}
+
+{% block content %}
+  <div class="card rounded-0">
+        <div class="card-header d-flex justify-content-center align-items-center">
+        <h5 class="card-title">{{'Booking History' if bookings[0].is_release else 'Active Booking Details'}}</h5>
+        </div>
+        <div class="container" style="height: 90vh;">
+            <div class="card-body d-flex justify-content-center p-5">
+                <div class="shadow rounded-3" style="overflow-y: auto; max-height: 75vh; height:75vh;">
+                    <table class="table table-striped table-light table-bordered table-hover m-0 p-0">
+                        <tr class="table-dark">
+                            <th class="">User Name</th>
+                            <th class="">Parking Name</th>
+                            <th class="">Address</th>
+                            <th class="">Spot</th>
+                            <th class="">Price(per hour)</th>
+                            <th class="">In Time</th>
+                            <th class="">Out Time</th>
+                            <th class="">Vehicle Number</th>
+                            <th class="">Hours</th>
+                            <th class="">Total Cost</th>
+                            {% if not session['isadmin'] %}
+                            <th class="">Action</th> 
+                            {% endif %}
+                        </tr>
+                        {% if not empty%}
+                            {% for booking in bookings %}
+                                <tr>
+                                    <td class="">{{booking.user.username|title}}</td>
+                                    <td class="">{{booking.parking_spot.parking_lot.parking_name|title}}</td>
+                                    <td class="">{{booking.parking_spot.parking_lot.address|title}}, {{booking.parking_spot.parking_lot.city|title}}, Pincode = {{booking.parking_spot.parking_lot.pincode}}</td>
+                                    <td class="">{{booking.parking_spot.spot_number}}</td>
+                                    <td class="">₹{{booking.parking_spot.parking_lot.price}}</td>
+                                    <td class="">{{booking.in_time}}</td>
+                                    <td class="">{{booking.out_time if booking.is_release else 'N/A'}}</td>
+                                    <td class="">{{booking.vehicle_number}}</td>
+                                    <td class="">{{booking.hours if booking.is_release else 'N/A'}}</td>
+                                    <td class="">₹{{booking.total_cost if booking.is_release else '0.0'}}</td>
+                                    {% if not session['isadmin'] %}
+                                        <td class="">
+                                            {% if booking.is_release %}
+                                                <a class="btn btn-success" disabled>Parked Out</a>
+                                            {% else %}
+                                                <a href="{{ url_for('booking_detail',id=booking.id, is_booking=false) }}" class="btn btn-warning" onclick="return confirm('Are you sure to release this spot?')">Release</a>
+                                            {% endif %}
+                                        </td>  
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+  </div>
+{% endblock %}

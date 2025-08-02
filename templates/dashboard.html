@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Dashboard
+{% endblock %}
+
+{% block style %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+  <style>
+      .chart-container {
+          background-color: #ffffff;
+          padding: 20px;
+          margin-bottom: 30px;
+          border-radius: 15px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      canvas {
+          max-height: 400px;
+      }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="text-center mb-4">Dashboard</h2>
+    <div class="row">
+        <!-- Lot-wise Booking Status -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5 class="text-center">Lot-wise Booking Status</h5>
+                <canvas id="lotBookingChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Lot-wise Monthly Earnings -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5 class="text-center">Lot-wise Monthly {{'Earnings' if session['isadmin'] else 'Spends'}}</h5>
+                <canvas id="lotMonthlyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- User-wise Booking Status -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5 class="text-center">User-wise Booking Status</h5>
+                <canvas id="userBookingChart"></canvas>
+            </div>
+        </div>
+
+        <!-- User-wise Monthly Spending -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5 class="text-center">User-wise Monthly Spends</h5>
+                <canvas id="userMonthlyChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Lot-wise Booking Status
+    const lotLabels = {{ lot_booking_dict.keys() | list | tojson }};
+    const completeData = {{ lot_booking_dict.values() | map(attribute='complete') | list | tojson }};
+    const activeData = {{ lot_booking_dict.values() | map(attribute='active') | list | tojson }};
+
+    new Chart(document.getElementById('lotBookingChart'), {
+        type: 'bar',
+        data: {
+            labels: lotLabels,
+            datasets: [
+                {
+                    label: 'Complete',
+                    data: completeData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                },
+                {
+                    label: 'Active',
+                    data: activeData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                }
+            ]
+        },
+        options: { responsive: true, scales: { yAxes: [{ ticks: { beginAtZero: true } }] } }
+    });
+
+    // Lot-wise Monthly Earnings
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const lotMonthlyData = {{ lot_monthly_dict | tojson }};
+
+    const datasets = Object.entries(lotMonthlyData).map(([lot, earnings]) => ({
+        label: lot,
+        data: earnings,
+        fill: false,
+        borderColor: '#' + Math.floor(Math.random()*16777215).toString(16),
+        tension: 0.3
+    }));
+
+    new Chart(document.getElementById('lotMonthlyChart'), {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: datasets
+        },
+        options: { responsive: true, scales: { yAxes: [{ ticks: { beginAtZero: true } }] } }
+    });
+
+    // // User-wise Booking Status
+    const userLabels = {{ user_booking_dict.keys() | list | tojson }};
+    const userComplete = {{ user_booking_dict.values() | map(attribute='complete') | list | tojson }};
+    const userActive = {{ user_booking_dict.values() | map(attribute='active') | list | tojson }};
+
+    new Chart(document.getElementById('userBookingChart'), {
+        type: 'bar',
+        data: {
+            labels: userLabels,
+            datasets: [
+                {
+                    label: 'Complete',
+                    data: userComplete,
+                    backgroundColor: 'rgba(153, 102, 255, 0.7)'
+                },
+                {
+                    label: 'Active',
+                    data: userActive,
+                    backgroundColor: 'rgba(255, 159, 64, 0.7)'
+                }
+            ]
+        },
+        options: { responsive: true, scales: { yAxes: [{ ticks: { beginAtZero: true } }] } }
+    });
+
+    // Use-wise Monthly Spends
+    const userMonthlyData = {{ user_monthly_dict | tojson }};
+    const userSpendDatasets = Object.entries(userMonthlyData).map(([user, spends]) => ({
+        label: user,
+        data: spends,
+        fill: false,
+        borderColor: '#' + Math.floor(Math.random()*16777215).toString(16),
+        tension: 0.3
+    }));
+
+    new Chart(document.getElementById('userMonthlyChart'), {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: userSpendDatasets
+        },
+        options: { responsive: true, scales: { yAxes: [{ ticks: { beginAtZero: true } }] } }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+<nav class="navbar text-bg-dark navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{url_for('home') if session['user_id'] else url_for('base')}}"> <img src="../static//favicon.png" alt="" height = 25rem style="margin-bottom: 4px;"> ParkEasy</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    {% if session['user_id'] %}
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link px-2 text-secondary" aria-current="page" href="{{url_for('home')}}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-2 text-white" href="{{url_for('dashboard')}}">Dashboard</a>
+        </li>
+        {% if session['isadmin'] %}
+          <li class="nav-item">
+            <a class="nav-link px-2 text-white" href="{{url_for('users_list')}}">Users List</a>
+          </li>
+        {% endif %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-2 text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Booking
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item nav-link px-2 text-white" href="{{url_for('active_booking')}}">Active Bookings</a></li>
+            <li><a class="dropdown-item nav-link px-2 text-white" href="{{url_for('booking_history')}}">Booking History</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-2 text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Profile
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item nav-link px-2 text-white" href="{{url_for('profile')}}">Profile Setting</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li style="display: flex; justify-content: center;"><a href="{{url_for('logout')}}" class="btn btn-outline-light">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+      {% if request.endpoint in ['home', 'users_list', 'active_booking', 'booking_history'] %}
+        <form class="d-flex" role="search" method="GET" action="{{ search_action }}">
+          <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search" value="{{ request.args.get('q', '') }}">
+          <button class="btn btn-outline-warning" type="submit">Search</button>
+        </form>
+      {% endif %}
+	  {% else %}
+      <div class="d-flex gap-2 align-items-center ms-auto">
+        <a href="{{url_for('login')}}" class="btn btn-outline-light">Login</a>
+        <a href="{{url_for('register')}}" class="btn btn-warning d-none d-md-block">Register Now</a>
+      </div>
+	  {% endif %}
+    </div>
+  </div>
+</nav>

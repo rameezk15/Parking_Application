@@ -1,0 +1,56 @@
+{% extends 'base.html' %} 
+
+{% block title %}
+    Users List
+{% endblock %}
+
+{% block content %}
+    <div class="container" style="overflow-y: auto; max-height: 90vh; height:90vh;">
+        <div class="row row-cols-2 row-cols-xs-2 row-cols-sm-2 row-cols-md-4 g-4 my-4">
+        {% for user in users %}
+            <div class="col my-3">
+                <div class="card shadow rounded-3" style="height: 520px;">
+                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed={{user.username}}" alt="Profile Image" height= 120px>
+                    <div class="card-Header text-center">
+                        <h5 class="card-title">{{user.name|title}}</h5>
+                    </div>
+
+                    <div class="card-body table-responsive mx-3">
+                        <table class="table">
+                            <tr>
+                                <th>Username</th>
+                                <td>{{user.username|title}}</td>
+                            </tr>
+                            <tr>
+                                <th>Name</th>
+                                <td>{{user.name|title}}</td>
+                            </tr>
+                            <tr>
+                                <th>City</th>
+                                <td>{{user.city|title}}</td>
+                            </tr>
+                            <tr>
+                                <th>Pincode</th>
+                                <td>{{user.pincode}}</td>
+                            </tr>
+                            <tr>
+                                <th>Active</th>
+                                <td>{{ booking_stats[user.id].active }}</td>
+                            </tr>
+                            <tr>
+                                <th>Complete</th>
+                                <td>{{ booking_stats[user.id].complete }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="card-footer d-flex flex-wrap justify-content-center align-items-center">
+                        <form class="m-2 text-center" action="{{ url_for('delete_user', user_id = user.id) }}" method="POST" onsubmit="return confirm('Delete User {{user.name|capitalize}}?')">
+                            <button type="submit" class="btn btn-outline-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}

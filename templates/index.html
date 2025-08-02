@@ -1,0 +1,119 @@
+{% extends 'base.html' %} 
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content %}
+    {% include 'lot_modal.html' %}
+
+    <div class="container" style="min-height: 90vh;">
+        <section class="text-center">
+            <h1 class="pt-5">Welcome to the ParkEasy</h1>
+            <p class="lead">Make your parking experience hassle free</p>
+            {% if session['isadmin'] %}
+                <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#lot-modal" onclick="resetLotModal()">Add Parking Lot</a>
+            {% endif %}
+        </section>
+        <div class="row row-cols-2 row-cols-xs-2 row-cols-sm-2 row-cols-md-4 g-4 my-4">
+        {% for lot in lots %}
+            <div class="col my-4">
+                <div class="card shadow rounded-3" style="overflow-y: auto; max-height: 80vh; min-height: 60vh;">
+                    <img src="../static/parking_img/img{{range(1, 15) | random}}.png" class="card-img-top" height="200" alt="...">
+                    <div class="card-body text-center m-0 p-2">
+                        <h5 class="card-title">{{lot.parking_name}}</h5>
+                        <p class="card-text">{{lot.address}}, Pincode = {{lot.pincode}}</p>
+                    </div>
+
+                    <div class="card-body table-responsive mx-3">
+                        <table class="table">
+                            <tr>
+                                <th>Parking City</th>
+                                <td>{{lot.city}}</td>
+                            </tr>
+                            <tr>
+                                <th>Price(per hour)</th>
+                                <td>₹{{lot.price}}</td>
+                            </tr>
+                            {% set status = spot_status.get(lot.id, {'occupied': 0, 'available_count': lot.number_of_spots}) %}
+                            <tr>
+                                <th>Available Spots</th>
+                                <td>{{status.available_count}}</td>
+                            </tr>
+                            <tr>
+                                <th>Occupied Spots</th>
+                                <td>{{status.occupied}}</td>
+                            </tr>
+                            <tr>
+                                <th>Total Spots</th>
+                                <td>{{status.number_of_spots}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="card-footer d-flex flex-wrap justify-content-center align-items-center">
+                        {% if session['isadmin'] %}
+                            <a href="{{ url_for('show_spot', lot_id=lot.id) }}" class="btn btn-outline-warning m-2 w-100">Spots Status</a>
+                            <a class="btn btn-outline-primary m-2 w-40"
+                            onclick="fillLotModal('{{ lot.id }}', '{{ lot.parking_name }}', '{{ lot.number_of_spots }}', '{{ lot.price }}', '{{ lot.address }}', '{{ lot.city }}', '{{ lot.pincode }}')"
+                            data-bs-toggle="modal" data-bs-target="#lot-modal">
+                            Update
+                            </a>
+                            <form class="m-2 w-40 text-center" action="{{ url_for('delete_lot', lot_id=lot.id) }}" method="POST" onsubmit="return confirm('Delete Parking Lot {{lot.parking_name|capitalize}}?')">
+                                <button type="submit" class="btn btn-outline-danger w-100">Delete</button>
+                            </form>
+                        {% else %}
+                            {% if (lot.number_of_spots - status.occupied) == 0 %}
+                                <a href="#" class="btn btn-outline-secondary m-2 w-100 disabled">Slot Not Available</a>
+                            {% else %}
+                                <a href="{{ url_for('booking_detail', id=lot.id, is_booking=true) }}" class="btn btn-outline-warning m-2 w-100">Book Spot</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        // Fill the value in model automatically while using the Update button
+        function fillLotModal(id, name, spots, price, address, city, pin) {
+        document.getElementById('parking_name').value = name;
+        document.getElementById('number_of_spots').value = spots;
+        document.getElementById('price').value = price;
+        document.getElementById('address').value = address;
+        document.getElementById('city').value = city;
+        document.getElementById('pincode').value = pin;
+
+        // Change modal title dynamically
+        document.getElementById('lot-modal-label').innerText = 'Update a Parking Lot';
+
+        // Change button title dynamically
+        document.getElementById('update_btn').innerText = 'Update';
+
+        // Change form action dynamically for update
+        const form = document.querySelector('#lot-modal form');
+        form.action = `/update_lot/${id}`;
+        }
+
+        // Clear the model value while using the Add button
+        function resetLotModal() {
+        document.getElementById('parking_name').value = '';
+        document.getElementById('number_of_spots').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('address').value = '';
+        document.getElementById('city').value = '';
+        document.getElementById('pincode').value = '';
+
+        // Change button title dynamically
+        document.getElementById('update_btn').innerText = 'Add';
+
+        // Reset modal title and form action for adding
+        document.getElementById('lot-modal-label').innerText = 'Add a Parking Lot';
+        const form = document.querySelector('#lot-modal form');
+        form.action = `/create_lot`;
+        }
+    </script>
+{% endblock %}

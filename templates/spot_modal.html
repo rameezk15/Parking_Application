@@ -1,0 +1,57 @@
+<div class="modal fade" id="spot-modal" tabindex="-1" aria-labelledby="spot-modal-label" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="POST" action="">
+        <div class="modal-header">
+          <h5 class="modal-title" id="spot-modal-label">Spot Detail</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped table-hover table-dark">
+            <tr class="mb-3">
+              <th>Parking Name</th>
+              <td class="table-light">
+                <input name="parking_name" type="text" class="form-control-plaintext" id="parking_name" readonly required>
+              </td>
+            </tr>
+            <tr class="mb-3">
+              <th>Spot</th>
+              <td class="table-light">
+                <input name="spot_number" type="text" class="form-control-plaintext" id="spot_number" readonly required>
+              </td>
+            </tr>
+            <tr class="mb-3">
+              <th>Status</th>
+              <td class="table-light">
+                <input name="status" type="text" class="form-control-plaintext" id="status" readonly required>
+              </td>
+            </tr>
+            <tr class="mb-3">
+              <th>User Name</th>
+              <td class="table-light">
+                <input name="user_name" type="text" class="form-control-plaintext" id="user_name" readonly required>
+              </td>
+            </tr>
+            <tr class="mb-3">
+              <th>In Time</th>
+              <td class="table-light">
+                <input name="in_time" type="text" class="form-control-plaintext" id="in_time" readonly required>
+              </td>
+            </tr>
+            <tr class="mb-3">
+              <th>Vehicle Number</th>
+              <td class="table-light">
+                <input name="vehicle_number" type="text" class="form-control-plaintext" id="vehicle_number" readonly required>
+              </td>
+            </tr>
+          </table>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-outline-success" id="delete_btn">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

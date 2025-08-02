@@ -1,0 +1,45 @@
+<div class="modal fade" id="lot-modal" tabindex="-1" aria-labelledby="lot-modal-label" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Default form action set to create_lot; will be changed via JS for update -->
+      <form method="POST" action="{{ url_for('create_lot') }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="lot-modal-label">Add a Parking Lot</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="parking_name" class="form-label">Parking Name</label>
+            <input name="parking_name" type="text" class="form-control" id="parking_name" placeholder="Enter parking name" pattern="[A-Za-z0-9\s,.]{5,64}" title="Parking Name should be 5–64 characters, letters, numbers, commas, or dots only" required>
+          </div>
+          <div class="mb-3">
+            <label for="number_of_spots" class="form-label">Number of Spots</label>
+            <input name="number_of_spots" type="number" class="form-control" id="number_of_spots" placeholder="Enter number of spots" required>
+          </div>
+          <div class="mb-3">
+            <label for="price" class="form-label">Price(per hour)</label>
+            <input name="price" type="number" class="form-control" id="price" placeholder="Enter price in INR" required>
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <input name="address" type="text" class="form-control" id="address" placeholder="Enter address" pattern="[A-Za-z0-9\s,.]{5,70}" title="Address should be 5–70 characters, letters, numbers, commas, or dots only" required>
+          </div>
+          <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input name="city" type="text" class="form-control" id="city" placeholder="Enter city" pattern="[A-Za-z\s.]{2,50}" title="City name should only contain letters, spaces or dot (max 50 characters)" required>
+          </div>
+          <div class="mb-3">
+            <label for="pincode" class="form-label">Pin Code</label>
+            <input name="pincode" type="text" class="form-control" id="pincode" pattern="\d{6}"  placeholder="Enter 6 digit pin code" 
+            title="Format: 6 digit pin code. Example: 110036"
+            required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-outline-success" id="update_btn">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Parking Spots
+{% endblock %}
+
+{% block content %}
+  {% include 'spot_modal.html' %}
+
+  <div class="container text-center">
+    <div class="m-4">
+      <h1  class="mt-4">{{lot_name|title}} Parking Lot</h1>
+      <span class="badge bg-success p-2">Available Spots:  {{available_count}}</span>
+      <span class="badge bg-danger p-2">Occupied Spots:  {{occupied_count}}</span>
+      <span class="badge bg-primary p-2">Price(per hour): ₹{{lot_price}}</span>
+    </div>
+    <div class="container" style="height: 70vh">
+      <div class="card my-2 p-3">
+        <div class="card-body" style="overflow-y: auto; max-height: 60vh; height:60vh;">
+          <div class="row row-cols-5 g-4">
+            {% for spot in spots %}
+              <div class="col text-center">
+                <a 
+                  class="{{ 'btn btn-danger' if spot.occupied else 'btn btn-success' }} text-white fw-bold rounded py-2"
+                  style="width: 150px; height: 45px"
+                  onclick="fillSpotModal(`{{ spot.id }}`, `{{ spot.parking_lot.parking_name }}`, `{{ spot.spot_number }}`, `{{ spot.occupied }}`, `{{ spot.spot_detail('user_name') if spot.occupied else '-' }}`, `{{ spot.spot_detail('in_time')  if spot.occupied else '-' }}`, `{{ spot.spot_detail('vehicle_number') if spot.occupied else '-' }}`)"
+                  data-bs-toggle="modal" data-bs-target="#spot-modal">
+                  {{ spot.spot_number }}
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        // Fill the value in model automatically while using the Update button
+        function fillSpotModal(spot_id, parking_name, spot_number, occupied, user_name, in_time, vehicle_number) {
+        document.getElementById('parking_name').value = parking_name;
+        document.getElementById('spot_number').value = spot_number;
+        document.getElementById('status').value = (occupied.toLowerCase() === 'true') ? 'Occupied' : 'Available';
+        document.getElementById('user_name').value = user_name;
+        document.getElementById('in_time').value = in_time;
+        document.getElementById('vehicle_number').value = vehicle_number;
+
+        // Change modal delete button dynamically
+        if (occupied.toLowerCase() === 'true') {
+            document.getElementById('delete_btn').className = 'btn btn-outline-secondary disabled';
+            document.getElementById('delete_btn').innerText = 'Not Deletable';
+        } else{
+          document.getElementById('delete_btn').className = 'btn btn-outline-danger';
+          document.getElementById('delete_btn').innerText = 'Delete';
+        }
+
+        // Change form action dynamically for update
+        const form = document.querySelector('#spot-modal form');
+        form.action = `/delete_spot/${spot_id}`;
+        }
+    </script>
+{% endblock %}

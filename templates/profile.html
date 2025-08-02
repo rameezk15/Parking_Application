@@ -1,0 +1,43 @@
+{% extends 'login.html' %} 
+
+{% block title %} 
+  Profile
+{% endblock %} 
+
+{% block content %}
+  <div class="profile-container">
+    <div class="container">
+      <form action="" method="post">
+        <h1>Profile</h1>
+        <div class="text-center">
+            <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed={{user.username}}" alt="Profile Image" height= 100px>
+        </div>
+        <div class="input-box">
+          <input type="text" name="name" placeholder="Name" value="{{user.name}}" pattern="[A-Za-z\s]{2,64}" title="Name should only contain letters or spaces (max 64 characters)" required />
+          <i class="bi bi-person-vcard-fill"></i>
+        </div>
+        <div class="input-box">
+          <input type="text" name="username" placeholder="Username" value="{{user.username}}" pattern="[A-Za-z0-9-]{2,32}" title="Username should only contain letters, digit or hyphens (max 32 characters)" required />
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <div class="input-box">
+          <input type="text" name="city" placeholder="City" value="{{user.city}}" pattern="[A-Za-z\s.]{2,50}" title="City name should only contain letters, spaces or dot (max 50 characters)" required />
+          <i class="bi bi-globe-central-south-asia"></i>
+        </div>
+        <div class="input-box">
+          <input type="text" name="pincode" placeholder="Pincode" value="{{user.pincode}}" pattern="\d{6}" title="Format: 6 digit pin code. Example: 110036" required/>
+          <i class="bi bi-geo-fill"></i>
+        </div>
+        <div class="input-box">
+          <input type="password" name="old_password" placeholder="Old Password" />
+          <i class="bi bi-key-fill"></i>
+        </div>
+        <div class="input-box">
+          <input type="password" name="new_password" placeholder="New Password" />
+          <i class="bi bi-key-fill"></i>
+        </div>
+        <button type="submit" class="btn">Update</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

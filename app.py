@@ -3,6 +3,7 @@ from controllers.config import config_app
 from models.models import db, User
 from controllers.routes import init_routes
 from werkzeug.security import generate_password_hash
+import os
 
 app = Flask(__name__)
 
@@ -28,4 +29,5 @@ with app.app_context():
 init_routes(app)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    port = int(os.environ.get("PORT", 10000))  # 10000 is a fallback
+    app.run(host='0.0.0.0', port=port, debug=True)
